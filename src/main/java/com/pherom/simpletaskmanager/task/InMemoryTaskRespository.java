@@ -1,8 +1,11 @@
 package com.pherom.simpletaskmanager.task;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Repository
 public class InMemoryTaskRespository implements TaskRepository{
     private final Map<Long, Task> tasks = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong();

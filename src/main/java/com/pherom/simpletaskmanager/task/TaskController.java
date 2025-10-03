@@ -12,23 +12,27 @@ import java.util.Optional;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private final TaskRepository repository = new InMemoryTaskRespository();
+    private final TaskService service;
+
+    public TaskController(TaskService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public List<Task> getAllTasks() {
-        return repository.findAll();
+        return service.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable long id) {
-        return repository.findById(id)
+        return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Optional<Task> result = repository.add(task);
+        Optional<Task> result = service.add(task);
 
         if (result.isEmpty()) {
             return ResponseEntity.status(409).build();
@@ -44,14 +48,14 @@ public class TaskController {
 
     @PutMapping
     public ResponseEntity<Task> saveTask(@RequestBody Task task) {
-        return repository.save(task)
+        return service.save(task)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Task> removeTask(@PathVariable long id) {
-        return repository.deleteById(id)
+        return service.deleteById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

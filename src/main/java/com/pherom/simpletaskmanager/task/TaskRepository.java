@@ -1,8 +1,11 @@
 package com.pherom.simpletaskmanager.task;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface TaskRepository {
 
     Optional<Task> save(Task task);
