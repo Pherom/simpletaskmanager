@@ -35,7 +35,7 @@ public class InMemoryTaskRespository implements TaskRepository{
 
     @Override
     public Optional<Task> deleteById(long id) {
-        Optional<Task> result = Optional.ofNullable(tasks.remove(id));
+        return Optional.ofNullable(tasks.remove(id));
     }
 
     @Override
