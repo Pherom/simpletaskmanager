@@ -14,11 +14,11 @@ public class TaskService {
         this.repository = repository;
     }
 
-    Optional<Task> save(Task task) {
+    public Optional<Task> save(Task task) {
         return repository.save(task);
     }
 
-    Optional<Task> add(Task task) {
+    public Optional<Task> add(Task task) {
         return repository.add(task);
     }
 
@@ -26,15 +26,15 @@ public class TaskService {
         return repository.findById(id);
     }
 
-    List<Task> findAll() {
+    public List<Task> findAll() {
         return repository.findAll();
     }
 
-    Optional<Task> deleteById(long id) {
+    public Optional<Task> deleteById(long id) {
         return repository.deleteById(id);
     }
 
-    Optional<Task> findByTitle(String title) {
+    public Optional<Task> findByTitle(String title) {
         return repository.findByTitle(title);
     }
 
