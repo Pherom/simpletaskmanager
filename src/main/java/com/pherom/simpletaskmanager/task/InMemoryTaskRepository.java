@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class InMemoryTaskRespository implements TaskRepository{
+public class InMemoryTaskRepository implements TaskRepository{
     private final Map<Long, Task> tasks = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong();
 
