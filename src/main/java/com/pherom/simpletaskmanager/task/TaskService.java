@@ -22,7 +22,7 @@ public class TaskService {
         return repository.add(task);
     }
 
-    Optional<Task> findById(long id) {
+    public Optional<Task> findById(long id) {
         return repository.findById(id);
     }
 
