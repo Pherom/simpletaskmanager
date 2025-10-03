@@ -5,10 +5,11 @@ import java.util.Optional;
 
 public interface TaskRepository {
 
-    Task save(Task task);
+    Optional<Task> save(Task task);
+    Optional<Task> add(Task task);
     Optional<Task> findById(long id);
     List<Task> findAll();
-    void deleteById(long id);
+    Optional<Task> deleteById(long id);
     Optional<Task> findByTitle(String title);
 
 }

@@ -8,13 +8,19 @@ public class InMemoryTaskRespository implements TaskRepository{
     private final AtomicLong idCounter = new AtomicLong();
 
     @Override
-    public Task save(Task task) {
+    public Optional<Task> save(Task task) {
         if (!tasks.containsKey(task.id())) {
-            throw new RuntimeException("Could not find task with ID: " + task.id());
+            return Optional.empty();
         }
 
         tasks.put(task.id(), task);
-        return task;
+        return Optional.of(task);
+    }
+
+    @Override
+    public Optional<Task> add(Task task) {
+        Task previous = tasks.putIfAbsent(task.id(), task);
+        return previous == null ? Optional.of(task) : Optional.empty();
     }
 
     @Override
@@ -28,8 +34,8 @@ public class InMemoryTaskRespository implements TaskRepository{
     }
 
     @Override
-    public void deleteById(long id) {
-        tasks.remove(id);
+    public Optional<Task> deleteById(long id) {
+        Optional<Task> result = Optional.ofNullable(tasks.remove(id));
     }
 
     @Override
