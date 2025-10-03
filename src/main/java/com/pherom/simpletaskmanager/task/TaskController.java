@@ -42,9 +42,9 @@ public class TaskController {
         return ResponseEntity.created(uri).body(result);
     }
 
-    @PutMapping
-    public ResponseEntity<Task> saveTask(@RequestBody Task task) {
-        return service.save(task)
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> saveTask(@PathVariable long id, @RequestBody Task task) {
+        return service.save(new Task(id, task.title(), task.description(), task.completed()))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
