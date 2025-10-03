@@ -6,7 +6,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -19,20 +18,20 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getAllTasks() {
+    public List<TaskResponseDTO> getAllTasks() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable long id) {
+    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable long id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Task result = service.add(task);
+    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody TaskRequestDTO task) {
+        TaskResponseDTO result = service.save(null, task);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -43,16 +42,12 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> saveTask(@PathVariable long id, @RequestBody Task task) {
-        return service.save(new Task(id, task.title(), task.description(), task.completed()))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TaskResponseDTO> saveTask(@PathVariable long id, @RequestBody TaskRequestDTO task) {
+        return ResponseEntity.ok(service.save(id, task));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Task> removeTask(@PathVariable long id) {
-        return service.deleteById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TaskResponseDTO> removeTask(@PathVariable long id) {
+        return ResponseEntity.ok(service.deleteById(id));
     }
 }
