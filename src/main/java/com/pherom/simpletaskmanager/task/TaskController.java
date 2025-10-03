@@ -32,18 +32,14 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Optional<Task> result = service.add(task);
-
-        if (result.isEmpty()) {
-            return ResponseEntity.status(409).build();
-        }
+        Task result = service.add(task);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(result.get().id())
+                .buildAndExpand(result.id())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(result.get());
+        return ResponseEntity.created(uri).body(result);
     }
 
     @PutMapping

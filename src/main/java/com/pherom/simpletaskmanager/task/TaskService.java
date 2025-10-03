@@ -18,7 +18,7 @@ public class TaskService {
         return repository.save(task);
     }
 
-    public Optional<Task> add(Task task) {
+    public Task add(Task task) {
         return repository.add(task);
     }
 

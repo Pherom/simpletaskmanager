@@ -21,9 +21,10 @@ public class InMemoryTaskRespository implements TaskRepository{
     }
 
     @Override
-    public Optional<Task> add(Task task) {
-        Task previous = tasks.putIfAbsent(task.id(), task);
-        return previous == null ? Optional.of(task) : Optional.empty();
+    public Task add(Task task) {
+        Task newTask = new Task(idCounter.incrementAndGet(), task.title(), task.description(), task.completed());
+        tasks.put(newTask.id(), newTask);
+        return newTask;
     }
 
     @Override
