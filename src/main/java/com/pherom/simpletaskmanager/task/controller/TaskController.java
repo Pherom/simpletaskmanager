@@ -1,5 +1,9 @@
-package com.pherom.simpletaskmanager.task;
+package com.pherom.simpletaskmanager.task.controller;
 
+import com.pherom.simpletaskmanager.task.dto.TaskRequestDTO;
+import com.pherom.simpletaskmanager.task.dto.TaskResponseDTO;
+import com.pherom.simpletaskmanager.task.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,7 +34,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> createTask(@RequestBody TaskRequestDTO task) {
+    public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskRequestDTO task) {
         TaskResponseDTO result = service.save(null, task);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -42,7 +46,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> saveTask(@PathVariable long id, @RequestBody TaskRequestDTO task) {
+    public ResponseEntity<TaskResponseDTO> saveTask(@PathVariable long id, @Valid @RequestBody TaskRequestDTO task) {
         return ResponseEntity.ok(service.save(id, task));
     }
 

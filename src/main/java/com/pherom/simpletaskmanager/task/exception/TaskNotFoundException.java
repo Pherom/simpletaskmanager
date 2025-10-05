@@ -1,4 +1,4 @@
-package com.pherom.simpletaskmanager.task;
+package com.pherom.simpletaskmanager.task.exception;
 
 public class TaskNotFoundException extends RuntimeException {
     public TaskNotFoundException(long id) {

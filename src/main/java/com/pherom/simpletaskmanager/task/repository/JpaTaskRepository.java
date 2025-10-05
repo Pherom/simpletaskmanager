@@ -1,5 +1,6 @@
-package com.pherom.simpletaskmanager.task;
+package com.pherom.simpletaskmanager.task.repository;
 
+import com.pherom.simpletaskmanager.task.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

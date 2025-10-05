@@ -1,6 +1,11 @@
-package com.pherom.simpletaskmanager.task;
+package com.pherom.simpletaskmanager.task.service;
 
-import org.springframework.dao.EmptyResultDataAccessException;
+import com.pherom.simpletaskmanager.task.dto.TaskRequestDTO;
+import com.pherom.simpletaskmanager.task.dto.TaskResponseDTO;
+import com.pherom.simpletaskmanager.task.entity.Task;
+import com.pherom.simpletaskmanager.task.exception.TaskNotFoundException;
+import com.pherom.simpletaskmanager.task.mapper.TaskMapper;
+import com.pherom.simpletaskmanager.task.repository.JpaTaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +48,10 @@ public class TaskService {
         TaskResponseDTO result = mapper.toDTO(toDelete);
         repository.delete(toDelete);
         return result;
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     public Optional<TaskResponseDTO> findByTitle(String title) {

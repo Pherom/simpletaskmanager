@@ -1,5 +1,8 @@
-package com.pherom.simpletaskmanager.task;
+package com.pherom.simpletaskmanager.task.mapper;
 
+import com.pherom.simpletaskmanager.task.dto.TaskRequestDTO;
+import com.pherom.simpletaskmanager.task.dto.TaskResponseDTO;
+import com.pherom.simpletaskmanager.task.entity.Task;
 import org.springframework.stereotype.Component;
 
 @Component

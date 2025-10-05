@@ -1,4 +1,4 @@
-package com.pherom.simpletaskmanager.task;
+package com.pherom.simpletaskmanager.task.entity;
 
 import jakarta.persistence.*;
 
