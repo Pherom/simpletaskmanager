@@ -166,4 +166,12 @@ class TaskServiceIntegrationTest {
         assertEquals(description, findResponse.get().description());
         assertEquals(completed, findResponse.get().completed());
     }
+
+    @Test
+    void findNonExistingTaskByTitle() {
+        String title = "TITLE";
+
+        Optional<TaskResponseDTO> findResponse = taskService.findByTitle(title);
+        assertTrue(findResponse.isEmpty());
+    }
 }
