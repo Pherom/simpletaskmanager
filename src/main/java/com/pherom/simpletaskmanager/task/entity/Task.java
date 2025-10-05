@@ -19,6 +19,13 @@ public class Task {
 
     }
 
+    public Task(long id, String title, String description, boolean completed) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.completed = completed;
+    }
+
     public Task(String title, String description, boolean completed) {
         this.title = title;
         this.description = description;
