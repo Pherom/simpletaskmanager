@@ -65,6 +65,16 @@ class TaskServiceIntegrationTest {
     }
 
     @Test
+    void updateNonExistingTask() {
+        String updatedTitle = "UPDATED_TITLE";
+        String updatedDescription = "UPDATED_DESC";
+        boolean updatedCompleted = true;
+
+        TaskRequestDTO updateRequest = new TaskRequestDTO(updatedTitle, updatedDescription, updatedCompleted);
+        assertThrows(TaskNotFoundException.class, () -> taskService.save(1L, updateRequest));
+    }
+
+    @Test
     void saveSeveralTasksAndFindEachByID() {
         int taskAmount = 20;
         String titlePrefix = "TASK";
