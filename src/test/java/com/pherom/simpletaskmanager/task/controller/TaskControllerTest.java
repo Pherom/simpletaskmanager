@@ -10,6 +10,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,5 +64,27 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$[2].title").value("TASK3"))
                 .andExpect(jsonPath("$[2].description").value("DESC3"))
                 .andExpect(jsonPath("$[2].completed").value(true));
+    }
+
+    @Test
+    void getTaskById_ShouldReturn404NotFound() throws Exception {
+        when(taskService.findById(1)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/tasks/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getTaskById_ShouldReturnTask() throws Exception {
+        TaskResponseDTO responseDTO = new TaskResponseDTO(1, "TASK1", "DESC1", false);
+
+        when(taskService.findById(1)).thenReturn(Optional.of(responseDTO));
+
+        mockMvc.perform(get("/api/tasks/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("TASK1"))
+                .andExpect(jsonPath("$.description").value("DESC1"))
+                .andExpect(jsonPath("$.completed").value(false));
     }
 }
