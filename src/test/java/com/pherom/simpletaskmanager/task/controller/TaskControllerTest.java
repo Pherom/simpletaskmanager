@@ -1,11 +1,14 @@
 package com.pherom.simpletaskmanager.task.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pherom.simpletaskmanager.task.dto.TaskRequestDTO;
 import com.pherom.simpletaskmanager.task.dto.TaskResponseDTO;
 import com.pherom.simpletaskmanager.task.service.TaskService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -86,5 +89,61 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.title").value("TASK1"))
                 .andExpect(jsonPath("$.description").value("DESC1"))
                 .andExpect(jsonPath("$.completed").value(false));
+    }
+
+    @Test
+    void createTask_ShouldCreateTaskAndReturnCreatedWithLocationHeader() throws Exception {
+        String title = "TASK";
+        String description = "DESC";
+        boolean completed = false;
+
+        TaskRequestDTO requestDTO = new TaskRequestDTO(title, description, completed);
+        TaskResponseDTO responseDTO = new TaskResponseDTO(1, title, description, completed);
+
+        when(taskService.save(null, requestDTO)).thenReturn(responseDTO);
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", Matchers.endsWith("/api/tasks/1")))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value(title))
+                .andExpect(jsonPath("$.description").value(description))
+                .andExpect(jsonPath("$.completed").value(completed));
+    }
+
+    @Test
+    void createEmptyTitledTask_ShouldReturnBadRequest() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("", "DESC", false);
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("title: must not be blank")));
+    }
+
+    @Test
+    void createLongTitledTask_ShouldReturnBadRequest() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("INVALIDTASK INVALIDTASK INVALIDTASK INVALIDTASK INVALIDTASK", "DESC", false);
+
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("title: size must be between 0 and 50")));
+    }
+
+    @Test
+    void createLongDescribedTask_ShouldReturnBadRequest() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("TASK", "INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC", false);
+
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("description: size must be between 0 and 255")));
     }
 }
