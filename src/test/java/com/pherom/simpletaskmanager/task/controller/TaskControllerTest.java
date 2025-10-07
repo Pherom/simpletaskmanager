@@ -3,6 +3,7 @@ package com.pherom.simpletaskmanager.task.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pherom.simpletaskmanager.task.dto.TaskRequestDTO;
 import com.pherom.simpletaskmanager.task.dto.TaskResponseDTO;
+import com.pherom.simpletaskmanager.task.exception.TaskNotFoundException;
 import com.pherom.simpletaskmanager.task.service.TaskService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -141,6 +142,74 @@ class TaskControllerTest {
         TaskRequestDTO requestDTO = new TaskRequestDTO("TASK", "INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC", false);
 
         mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("description: size must be between 0 and 255")));
+    }
+
+    @Test
+    void saveTask_ShouldReturnUpdatedTask() throws Exception {
+        String updatedTitle = "UPDATED_TASK";
+        String updatedDesc = "UPDATED_DESC";
+        boolean updatedComp = true;
+
+        TaskResponseDTO existing = new TaskResponseDTO(1, "TASK", "DESCRIPTION", false);
+        TaskRequestDTO updateRequest = new TaskRequestDTO(updatedTitle, updatedDesc, updatedComp);
+        TaskResponseDTO updated = new TaskResponseDTO(1, updatedTitle, updatedDesc, updatedComp);
+
+        when(taskService.findById(1)).thenReturn(Optional.of(existing));
+        when(taskService.save(1L, updateRequest)).thenReturn(updated);
+
+        mockMvc.perform(put("/api/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value(updatedTitle))
+                .andExpect(jsonPath("$.description").value(updatedDesc))
+                .andExpect(jsonPath("$.completed").value(updatedComp));
+    }
+
+    @Test
+    void saveTask_ShouldReturn404NotFound() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("UPDATED_TASK", "UPDATED_DESC", true);
+
+        when(taskService.save(1L, requestDTO)).thenThrow(new TaskNotFoundException(1));
+
+        mockMvc.perform(put("/api/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void saveUpdatedEmptyTitledTask_ShouldReturnBadRequest() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("", "DESC", false);
+
+        mockMvc.perform(put("/api/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("title: must not be blank")));
+    }
+
+    @Test
+    void saveUpdatedLongTitledTask_ShouldReturnBadRequest() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("INVALIDTASK INVALIDTASK INVALIDTASK INVALIDTASK INVALIDTASK", "DESC", false);
+
+        mockMvc.perform(put("/api/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("title: size must be between 0 and 50")));
+    }
+
+    @Test
+    void saveUpdatedLongDescribedTask_ShouldReturnBadRequest() throws Exception {
+        TaskRequestDTO requestDTO = new TaskRequestDTO("TASK", "INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC INVALIDDESC", false);
+
+        mockMvc.perform(put("/api/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest())
