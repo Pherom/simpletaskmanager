@@ -6,6 +6,7 @@ import com.pherom.simpletaskmanager.task.entity.Task;
 import com.pherom.simpletaskmanager.task.exception.TaskNotFoundException;
 import com.pherom.simpletaskmanager.task.mapper.TaskMapper;
 import com.pherom.simpletaskmanager.task.repository.JpaTaskRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class TaskService {
         this.mapper = mapper;
     }
 
+    @Transactional
     public TaskResponseDTO save(Long id, TaskRequestDTO task) {
         Task saveMe = (id == null)
                 ? mapper.toTask(task)
@@ -43,6 +45,7 @@ public class TaskService {
         return repository.findAll().stream().map(mapper::toDTO).toList();
     }
 
+    @Transactional
     public TaskResponseDTO deleteById(long id) {
         Task toDelete = repository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
         TaskResponseDTO result = mapper.toDTO(toDelete);
@@ -50,6 +53,7 @@ public class TaskService {
         return result;
     }
 
+    @Transactional
     public void deleteAll() {
         repository.deleteAll();
     }
