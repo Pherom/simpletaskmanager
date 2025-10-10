@@ -34,17 +34,6 @@ public class UserService {
         return mapper.toDTO(updateUser(found.get(), request));
     }
 
-    @Transactional
-    public UserResponseDTO updateByUsername(String username, UserUpdateRequestDTO request) {
-        Optional<User> found = repository.findByUsername(username);
-
-        if (found.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-
-        return mapper.toDTO(updateUser(found.get(), request));
-    }
-
     public Optional<UserResponseDTO> findById(long id) {
         return repository.findById(id).map(mapper::toDTO);
     }
@@ -64,15 +53,6 @@ public class UserService {
             repository.delete(u);
             return mapper.toDTO(u);
         }).orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    @Transactional
-    public UserResponseDTO deleteByUsername(String username) {
-        Optional<User> found = repository.findByUsername(username);
-        return found.map(u -> {
-            repository.delete(u);
-            return mapper.toDTO(u);
-        }).orElseThrow(() -> new UserNotFoundException(username));
     }
 
     private User updateUser(User user, UserUpdateRequestDTO request) {

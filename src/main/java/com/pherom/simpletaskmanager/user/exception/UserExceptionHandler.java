@@ -1,15 +1,16 @@
-package com.pherom.simpletaskmanager.task.exception;
+package com.pherom.simpletaskmanager.user.exception;
 
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class TaskExceptionHandler {
+public class UserExceptionHandler {
 
-    @ExceptionHandler(TaskNotFoundException.class)
-    public ResponseEntity<String> handleNotFound(TaskNotFoundException ex) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(UserNotFoundException ex) {
         return ResponseEntity.notFound().build();
     }
 
