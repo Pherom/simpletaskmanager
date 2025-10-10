@@ -4,6 +4,7 @@ import com.pherom.simpletaskmanager.user.dto.UserResponseDTO;
 import com.pherom.simpletaskmanager.user.dto.UserUpdateRequestDTO;
 import com.pherom.simpletaskmanager.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +45,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> removeUserById(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeUserById(@PathVariable long id) {
         service.deleteById(id);
     }
 
