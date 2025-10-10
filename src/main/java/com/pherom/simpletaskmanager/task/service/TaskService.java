@@ -28,9 +28,15 @@ public class TaskService {
         Task saveMe = (id == null)
                 ? mapper.toTask(task)
                 : repository.findById(id).map(existing -> {
-                    existing.setTitle(task.title());
-                    existing.setDescription(task.description());
-                    existing.setCompleted(task.completed());
+                    if (task.title() != null) {
+                        existing.setTitle(task.title());
+                    }
+                    if (task.description() != null) {
+                        existing.setDescription(task.description());
+                    }
+                    if (task.completed() != null) {
+                        existing.setCompleted(task.completed());
+                    }
                     return existing;
         }).orElseThrow(() -> new TaskNotFoundException(id));
 
