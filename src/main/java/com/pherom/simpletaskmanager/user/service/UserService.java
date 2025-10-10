@@ -47,12 +47,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO deleteById(long id) {
-        Optional<User> found = repository.findById(id);
-        return found.map(u -> {
-            repository.delete(u);
-            return mapper.toDTO(u);
-        }).orElseThrow(() -> new UserNotFoundException(id));
+    public void deleteById(long id) {
+        repository.delete(repository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 
     private User updateUser(User user, UserUpdateRequestDTO request) {

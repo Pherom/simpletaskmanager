@@ -220,21 +220,13 @@ class TaskControllerTest {
         String deletedDesc = "DESC";
         boolean deletedComp = false;
 
-        TaskResponseDTO deleted = new TaskResponseDTO(1, deletedTitle, deletedDesc, deletedComp);
-
-        when(taskService.deleteById(1)).thenReturn(deleted);
-
         mockMvc.perform(delete("/api/tasks/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value(deletedTitle))
-                .andExpect(jsonPath("$.description").value(deletedDesc))
-                .andExpect(jsonPath("$.completed").value(deletedComp));
+                .andExpect(status().isNoContent());
     }
 
     @Test
     void removeNonExistentTask_ShouldReturnNotFound() throws Exception {
-        when(taskService.deleteById(1)).thenThrow(new TaskNotFoundException(1));
+        doThrow(new TaskNotFoundException(1)).when(taskService).deleteById(1);
 
         mockMvc.perform(delete("/api/tasks/1"))
                 .andExpect(status().isNotFound());

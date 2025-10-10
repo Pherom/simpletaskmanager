@@ -4,6 +4,7 @@ import com.pherom.simpletaskmanager.task.dto.TaskRequestDTO;
 import com.pherom.simpletaskmanager.task.dto.TaskResponseDTO;
 import com.pherom.simpletaskmanager.task.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -51,7 +52,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> removeTask(@PathVariable long id) {
-        return ResponseEntity.ok(service.deleteById(id));
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeTask(@PathVariable long id) {
+        service.deleteById(id);
     }
 }

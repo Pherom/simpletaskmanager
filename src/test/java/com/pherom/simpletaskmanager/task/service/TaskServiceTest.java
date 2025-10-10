@@ -174,15 +174,12 @@ class TaskServiceTest {
         TaskResponseDTO expectedDTO = new TaskResponseDTO(1, title, desc, completed);
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(toDelete));
-        when(taskMapper.toDTO(toDelete)).thenReturn(expectedDTO);
 
-        TaskResponseDTO response = taskService.deleteById(1L);
+        taskService.deleteById(1L);
 
         verify(taskRepository).findById(1L);
         verify(taskRepository).delete(toDelete);
         verifyNoMoreInteractions(taskRepository);
-
-        assertSame(expectedDTO, response);
     }
 
     @Test

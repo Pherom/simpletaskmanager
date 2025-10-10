@@ -127,13 +127,9 @@ class TaskServiceIntegrationTest {
         TaskRequestDTO request = new TaskRequestDTO(title, description, completed);
         TaskResponseDTO saveResponse = taskService.save(null, request);
 
-        TaskResponseDTO deleteResponse = taskService.deleteById(saveResponse.id());
+        taskService.deleteById(saveResponse.id());
         Optional<TaskResponseDTO> findResponse = taskService.findById(saveResponse.id());
 
-        assertEquals(saveResponse.id(), deleteResponse.id());
-        assertEquals(saveResponse.title(), deleteResponse.title());
-        assertEquals(saveResponse.description(), deleteResponse.description());
-        assertEquals(saveResponse.completed(), deleteResponse.completed());
         assertTrue(findResponse.isEmpty());
     }
 

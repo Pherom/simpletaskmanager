@@ -52,11 +52,8 @@ public class TaskService {
     }
 
     @Transactional
-    public TaskResponseDTO deleteById(long id) {
-        Task toDelete = repository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
-        TaskResponseDTO result = mapper.toDTO(toDelete);
-        repository.delete(toDelete);
-        return result;
+    public void deleteById(long id) {
+        repository.delete(repository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)));
     }
 
     @Transactional
