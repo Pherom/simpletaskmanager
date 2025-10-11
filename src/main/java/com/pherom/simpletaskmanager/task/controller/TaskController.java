@@ -56,4 +56,10 @@ public class TaskController {
     public void removeTask(@PathVariable long id) {
         service.deleteById(id);
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeAll() {
+        service.deleteAll();
+    }
 }

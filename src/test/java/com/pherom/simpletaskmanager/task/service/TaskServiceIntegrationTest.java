@@ -36,6 +36,9 @@ class TaskServiceIntegrationTest {
 
         Optional<TaskResponseDTO> findResponse = taskService.findById(saveResponse.id());
         assertTrue(findResponse.isPresent());
+        assertEquals(title, saveResponse.title());
+        assertEquals(description, saveResponse.description());
+        assertEquals(completed, saveResponse.completed());
         assertEquals(title, findResponse.get().title());
         assertEquals(description, findResponse.get().description());
         assertEquals(completed, findResponse.get().completed());
@@ -55,10 +58,13 @@ class TaskServiceIntegrationTest {
         TaskResponseDTO saveResponse = taskService.save(null, request);
 
         TaskRequestDTO updateRequest = new TaskRequestDTO(updatedTitle, updatedDescription, updatedCompleted);
-        taskService.save(saveResponse.id(), updateRequest);
+        TaskResponseDTO updateResponse =  taskService.save(saveResponse.id(), updateRequest);
 
         Optional<TaskResponseDTO> response = taskService.findById(saveResponse.id());
         assertTrue(response.isPresent());
+        assertEquals(updatedTitle, updateResponse.title());
+        assertEquals(updatedDescription, updateResponse.description());
+        assertEquals(updatedCompleted, updateResponse.completed());
         assertEquals(updatedTitle, response.get().title());
         assertEquals(updatedDescription, response.get().description());
         assertEquals(updatedCompleted, response.get().completed());

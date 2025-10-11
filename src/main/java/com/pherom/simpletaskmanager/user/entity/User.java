@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = {"username", "email"}))
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_user_username", columnNames = {"username"}),
+        @UniqueConstraint(name = "uk_user_email", columnNames = {"email"})
+})
 public class User {
 
     @Id
@@ -15,15 +18,17 @@ public class User {
     private String password;
     private String email;
 
-    public User(String username, String password) {
+    public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
-    public User(long id, String username, String password) {
+    public User(long id, String username, String password, String email) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     protected User() {

@@ -50,4 +50,10 @@ public class UserController {
         service.deleteById(id);
     }
 
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeAll() {
+        service.deleteAll();
+    }
+
 }
