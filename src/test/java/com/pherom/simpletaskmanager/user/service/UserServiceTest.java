@@ -199,4 +199,27 @@ class UserServiceTest {
         assertTrue(responseDTO.isEmpty());
     }
 
+    @Test
+    void deleteById_ShouldDeleteUser() {
+        User existingUser = new User(1L, "Mark", "password123", "mark@gmail.com");
+        when(repository.findById(existingUser.getId())).thenReturn(Optional.of(existingUser));
+
+        service.deleteById(existingUser.getId());
+
+        verify(repository).findById(existingUser.getId());
+        verify(repository).delete(existingUser);
+        verifyNoMoreInteractions(repository, mapper);
+    }
+
+    @Test
+    void deleteById_ShouldThrowUserNotFoundException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> service.deleteById(1L));
+
+        verify(repository).findById(1L);
+        verifyNoMoreInteractions(repository, mapper);
+        assertTrue(ex.getMessage().contains("1"));
+    }
+
 }
