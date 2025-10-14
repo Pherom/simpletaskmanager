@@ -3,6 +3,7 @@ package com.pherom.simpletaskmanager.user.service;
 import com.pherom.simpletaskmanager.user.dto.UserResponseDTO;
 import com.pherom.simpletaskmanager.user.dto.UserUpdateRequestDTO;
 import com.pherom.simpletaskmanager.user.entity.User;
+import com.pherom.simpletaskmanager.user.exception.UserNotFoundException;
 import com.pherom.simpletaskmanager.user.mapper.UserMapper;
 import com.pherom.simpletaskmanager.user.repository.JpaUserRepository;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,19 @@ class UserServiceTest {
         verify(repository).findById(1L);
         verify(repository).save(any(User.class));
         verify(mapper).toDTO(any(User.class));
+    }
+
+    @Test
+    void updateById__ShouldThrowUserNotFoundException() {
+        long idToUpdate = 1;
+        UserUpdateRequestDTO requestDTO = new UserUpdateRequestDTO("mark", "mark@gmail.com");
+        when(repository.findById(idToUpdate)).thenReturn(Optional.empty());
+
+        UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> service.updateById(idToUpdate, requestDTO));
+
+        verify(repository).findById(idToUpdate);
+        verifyNoMoreInteractions(repository);
+        assertTrue(ex.getMessage().contains("1"));
     }
 
 }
