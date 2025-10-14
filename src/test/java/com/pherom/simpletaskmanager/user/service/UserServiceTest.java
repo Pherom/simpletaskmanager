@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -131,6 +132,43 @@ class UserServiceTest {
         verify(repository).findById(1L);
         verifyNoMoreInteractions(repository, mapper);
         assertTrue(responseDTO.isEmpty());
+    }
+
+    @Test
+    void findAll_ShouldReturnEmpty() {
+        List<User> empty = List.of();
+
+        when(repository.findAll()).thenReturn(empty);
+
+        List<UserResponseDTO> responseDTOS = service.findAll();
+
+        verify(repository).findAll();
+        verifyNoMoreInteractions(repository, mapper);
+        assertTrue(responseDTOS.isEmpty());
+    }
+
+    @Test
+    void findAll_ShouldReturnListOfUserResponses() {
+        List<User> users = List.of(
+          new User(1L, "Mark", "password123", "mark@gmail.com"),
+          new User(2L, "Anna", "password246", "anna@gmail.com")
+        );
+
+        List<UserResponseDTO> expectedResponseDTOS = users.stream().map(u -> new UserResponseDTO(u.getId(), u.getUsername(), u.getEmail())).toList();
+
+        when(repository.findAll()).thenReturn(users);
+        for (int i = 0; i < users.size(); ++i) {
+            when(mapper.toDTO(users.get(i))).thenReturn(expectedResponseDTOS.get(i));
+        }
+
+        List<UserResponseDTO> responseDTOS = service.findAll();
+
+        verify(repository).findAll();
+        for (User user : users) {
+            verify(mapper).toDTO(user);
+        }
+        verifyNoMoreInteractions(repository, mapper);
+        assertEquals(expectedResponseDTOS, responseDTOS);
     }
 
 }
