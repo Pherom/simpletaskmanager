@@ -72,7 +72,7 @@ class TaskServiceTest {
         TaskResponseDTO expectedDTO = new TaskResponseDTO(1L, updatedTitle, updatedDesc, updatedCompleted);
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(taskRepository.save(updatedTask)).thenReturn(updatedTask);
+        when(taskRepository.save(any(Task.class))).thenReturn(updatedTask);
         when(taskMapper.toDTO(updatedTask)).thenReturn(expectedDTO);
 
         TaskResponseDTO response = taskService.save(1L, updateRequest);
@@ -171,7 +171,6 @@ class TaskServiceTest {
         boolean completed = false;
 
         Task toDelete = new Task(1, title, desc, completed);
-        TaskResponseDTO expectedDTO = new TaskResponseDTO(1, title, desc, completed);
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(toDelete));
 
