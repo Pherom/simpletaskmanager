@@ -49,8 +49,11 @@ class UserServiceTest {
 
         assertEquals(expectedResponseDTO, updateResponse);
         verify(repository).findById(1L);
+        verify(repository).existsByEmail(updatedUser.getEmail());
+        verify(repository).existsByUsername(updatedUser.getUsername());
         verify(repository).save(any(User.class));
         verify(mapper).toDTO(any(User.class));
+        verifyNoMoreInteractions(repository, mapper);
     }
 
     @Test
@@ -62,7 +65,7 @@ class UserServiceTest {
         UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> service.updateById(idToUpdate, requestDTO));
 
         verify(repository).findById(idToUpdate);
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, mapper);
         assertTrue(ex.getMessage().contains("1"));
     }
 
@@ -79,7 +82,7 @@ class UserServiceTest {
 
         verify(repository).findById(idToUpdate);
         verify(repository).existsByUsername(requestDTO.username());
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, mapper);
         assertTrue(ex.getMessage().contains(requestDTO.username()));
     }
 
@@ -98,7 +101,7 @@ class UserServiceTest {
         verify(repository).findById(idToUpdate);
         verify(repository).existsByUsername(requestDTO.username());
         verify(repository).existsByEmail(requestDTO.email());
-        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(repository, mapper);
         assertTrue(ex.getMessage().contains(requestDTO.email()));
     }
 
@@ -113,11 +116,21 @@ class UserServiceTest {
         Optional<UserResponseDTO> responseDTO = service.findById(1L);
 
         verify(repository).findById(1L);
-        verifyNoMoreInteractions(repository);
         verify(mapper).toDTO(existingUser);
-        verifyNoMoreInteractions(mapper);
+        verifyNoMoreInteractions(repository, mapper);
         assertTrue(responseDTO.isPresent());
         assertEquals(expectedResponse, responseDTO.get());
+    }
+
+    @Test
+    void findById_ShouldReturnEmpty() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<UserResponseDTO> responseDTO = service.findById(1L);
+
+        verify(repository).findById(1L);
+        verifyNoMoreInteractions(repository, mapper);
+        assertTrue(responseDTO.isEmpty());
     }
 
 }
