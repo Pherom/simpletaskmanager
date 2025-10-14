@@ -171,4 +171,32 @@ class UserServiceTest {
         assertEquals(expectedResponseDTOS, responseDTOS);
     }
 
+    @Test
+    void findByUsername_ShouldReturnAnExistingUser() {
+        User existingUser = new User(1L, "username", "password", "email");
+        UserResponseDTO expectedResponse = new UserResponseDTO(1L, "username", "email");
+
+        when(repository.findByUsername(existingUser.getUsername())).thenReturn(Optional.of(existingUser));
+        when(mapper.toDTO(existingUser)).thenReturn(expectedResponse);
+
+        Optional<UserResponseDTO> responseDTO = service.findByUsername(existingUser.getUsername());
+
+        verify(repository).findByUsername(existingUser.getUsername());
+        verify(mapper).toDTO(existingUser);
+        verifyNoMoreInteractions(repository, mapper);
+        assertTrue(responseDTO.isPresent());
+        assertEquals(expectedResponse, responseDTO.get());
+    }
+
+    @Test
+    void findByUsername_ShouldReturnEmpty() {
+        when(repository.findByUsername("username")).thenReturn(Optional.empty());
+
+        Optional<UserResponseDTO> responseDTO = service.findByUsername("username");
+
+        verify(repository).findByUsername("username");
+        verifyNoMoreInteractions(repository, mapper);
+        assertTrue(responseDTO.isEmpty());
+    }
+
 }
