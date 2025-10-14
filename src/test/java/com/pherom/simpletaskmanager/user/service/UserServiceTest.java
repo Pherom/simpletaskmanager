@@ -222,4 +222,12 @@ class UserServiceTest {
         assertTrue(ex.getMessage().contains("1"));
     }
 
+    @Test
+    void deleteAll_ShouldDeleteAllUsers() {
+        service.deleteAll();
+
+        verify(repository).deleteAll();
+        verifyNoMoreInteractions(repository, mapper);
+    }
+
 }
